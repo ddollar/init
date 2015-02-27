@@ -42,7 +42,7 @@ func main() {
 	go handleSignal(syscall.SIGTERM, terminate)
 	go handleSignal(syscall.SIGKILL, terminate)
 
-	useUsr1 = flag.Bool("usr", false, "send usr1 before term")
+	useUsr1 = flag.Bool("usr1", false, "send usr1 before term")
 
 	flag.Parse()
 
