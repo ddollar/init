@@ -20,10 +20,12 @@ func reap() {
 func terminate() {
 	if *useUsr1 {
 		syscall.Kill(-1, syscall.SIGUSR1)
-		time.Sleep(5 * time.Second)
+		time.Sleep(2 * time.Second)
 	}
+
 	syscall.Kill(-1, syscall.SIGTERM)
 	time.Sleep(5 * time.Second)
+
 	syscall.Kill(-1, syscall.SIGKILL)
 	os.Exit(0)
 }
