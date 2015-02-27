@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -10,11 +11,17 @@ import (
 	"time"
 )
 
+var useUsr1 *bool
+
 func reap() {
 	syscall.Wait4(-1, nil, syscall.WNOHANG, &syscall.Rusage{})
 }
 
 func terminate() {
+	if *useUsr1 {
+		syscall.Kill(-1, syscall.SIGUSR1)
+		time.Sleep(5 * time.Second)
+	}
 	syscall.Kill(-1, syscall.SIGTERM)
 	time.Sleep(5 * time.Second)
 	syscall.Kill(-1, syscall.SIGKILL)
@@ -35,7 +42,12 @@ func main() {
 	go handleSignal(syscall.SIGTERM, terminate)
 	go handleSignal(syscall.SIGKILL, terminate)
 
-	args := os.Args[1:]
+	useUsr1 = flag.Bool("usr", false, "send usr1 before term")
+
+	flag.Parse()
+
+	args := flag.Args()
+	fmt.Printf("args %+v\n", args)
 
 	if len(args) < 1 {
 		fmt.Println("usage: init <command>")
